@@ -100,8 +100,8 @@ pip install wandb moviepy
 #### 5. Install AD2C
 
 ```bash
-git clone -b stabel https://github.com/Svar7769/AD2C-Diversity-Testing.git
-cd AD2C-Diversity-Testing
+git clone -b stabel https://github.com/Svar7769/AD2C-Diversity.git
+cd AD2C-Diversity
 pip install -e .
 ```
 
