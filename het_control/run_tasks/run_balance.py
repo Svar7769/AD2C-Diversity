@@ -7,17 +7,20 @@ import sys
 from het_control.run import run_experiment
 import yaml
 import os
+from pathlib import Path
 
 # =============================================================================
 # CONFIGURATION - Updated Paths for New System
 # =============================================================================
 # Base directory for the project
-BASE_DIR = "/home/grad/doc/2027/spatel2/ad2c/AD2C-Diversity-Testing"
+BASE_DIR = Path(__file__).resolve().parents[2]
 
 # Paths
-ABS_CONFIG_PATH = f"{BASE_DIR}/het_control/conf"
+CONFIG_PATH = f"{BASE_DIR}/het_control/conf"
 CONFIG_NAME = "balance_ippo_config"
-SAVE_PATH = "/home/grad/doc/2027/spatel2/ad2c/model_checkpoint/balance_ippo/"
+SAVE_PATH = f"{BASE_DIR}/model_checkpoint/balance_ippo/"
+
+Path(SAVE_PATH).mkdir(parents=True, exist_ok=True)
 
 # Default training parameters (can be overridden)
 DEFAULT_MAX_FRAMES = 12_000_000
@@ -204,7 +207,7 @@ def run_balance_experiment(
     
     # Execute via the reusable run_experiment function from run.py
     run_experiment(
-        config_path=ABS_CONFIG_PATH,
+        config_path=CONFIG_PATH,
         config_name=CONFIG_NAME,
         save_path=SAVE_PATH,
         max_frames=max_frames,
