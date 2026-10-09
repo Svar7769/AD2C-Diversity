@@ -20,3 +20,4 @@ scale_mapping: "biased_softplus_1.0"
 # Whether to use a TanhNormal
 # or an IndependentNormal action distribution in the policy
 use_tanh_normal: True
+minibatch_advantage: False

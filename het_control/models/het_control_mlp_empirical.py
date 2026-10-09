@@ -143,7 +143,8 @@ class HetControlMlpEmpirical(Model):
         else:  # Gather outputs for one agent on the obs
             # tensor of shape [*batch, n_agents, n_actions], where the outputs
             # along the n_agent dimension are taken with the same (agent_index) agent network
-            agent_out = self.agent_mlps.agent_networks[agent_index].forward(input)
+            # agent_out = self.agent_mlps.agent_networks[agent_index].forward(input)
+            agent_out = self._all_agent_outputs(input).select(-2, agent_index)
 
         shared_out = self.process_shared_out(shared_out)
 
@@ -230,6 +231,13 @@ class HetControlMlpEmpirical(Model):
         else:
             return logits
 
+    def _all_agent_outputs(self, obs: torch.Tensor):
+        # Evaluate every agent's policy on every observation.
+        inputs = obs.unsqueeze(-2).expand(
+            *obs.shape[:-1], self.n_agents, obs.shape[-1]
+        )
+        return self.agent_mlps(inputs)
+
     # @torch.no_grad()
     def estimate_snd(self, obs: torch.Tensor):
         """
@@ -237,9 +245,11 @@ class HetControlMlpEmpirical(Model):
         """
         agent_actions = []
         # Gather what actions each agent would take if given the obs tensor
-        for agent_net in self.agent_mlps.agent_networks:
-            agent_outputs = agent_net(obs)
-            agent_actions.append(agent_outputs)
+        # for agent_net in self.agent_mlps.agent_networks:
+        #    agent_outputs = agent_net(obs)
+        #    agent_actions.append(agent_outputs)
+
+        agent_actions = list(self._all_agent_outputs(obs).unbind(dim=-2))
 
         distance = (
             compute_behavioral_distance(agent_actions=agent_actions, just_mean=True)

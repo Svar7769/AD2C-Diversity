@@ -1,12 +1,10 @@
 """
 Runner script for Balance task with ESC control.
 Fully dynamic - supports any Hydra override from command line.
-Path: /home/spatel/Desktop/ad2c/AD2C-Diversity-Testing/
 """
 import sys
 from het_control.run import run_experiment
 import yaml
-import os
 from pathlib import Path
 
 # =============================================================================
@@ -214,6 +212,8 @@ def run_balance_experiment(
         checkpoint_interval=checkpoint_interval,
         desired_snd=desired_snd,
         task_overrides=task_overrides,
+        model_overrides=model_overrides,
+        experiment_overrides=experiment_overrides,
         seed=seed,
         esc_config_path=esc_config_to_use,
         use_esc=use_esc
