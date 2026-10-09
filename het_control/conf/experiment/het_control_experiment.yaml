@@ -105,3 +105,19 @@ loggers: [wandb]
 # Create a json folder as part of the output in the format of marl-eval
 create_json: False
 
+
+# Settings required by the updated BenchMARL
+adam_extra_kwargs: {}
+buffer_device: cpu
+checkpoint_at_end: False
+collect_with_grad: False
+evaluation_static: False
+exclude_buffer_from_checkpoint: False
+keep_checkpoints_num: 3
+off_policy_prb_alpha: 0.6
+off_policy_prb_beta: 0.4
+off_policy_use_prioritized_replay_buffer: False
+parallel_collection: False
+project_name: benchmarl
+restore_map_location: null
+wandb_extra_kwargs: {}

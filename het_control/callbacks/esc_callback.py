@@ -244,3 +244,31 @@ class ESCCallback(Callback):
         }
         
         self.experiment.logger.log(logs, step=self.experiment.n_iters_performed)
+
+    def on_state_dict(self, state_dict):
+        if self.controller is None or self.model is None:
+            return
+
+        state_dict[f"esc_{self.control_group}"] = {
+            "controller": self.controller.state_dict(),
+            "desired_snd": float(self.model.desired_snd.item()),
+        }
+
+    def on_load_state_dict(self, state_dict):
+        saved = state_dict.get(f"esc_{self.control_group}")
+        if saved is None:
+            print("[ESC] Checkpoint has no ESC state; controller starts fresh.")
+            return
+
+        if self.controller is None or self.model is None:
+            raise RuntimeError("Cannot restore ESC: controller is not initialized.")
+
+        self.controller.load_state_dict(saved["controller"])
+        with torch.no_grad():
+            self.model.desired_snd.fill_(saved["desired_snd"])
+
+        print(
+            f"[ESC] Restored phase={self.controller.wt:.4f}, "
+            f"integral={self.controller.integral:.6f}, "
+            f"SND={self.model.desired_snd.item():.4f}"
+        )
