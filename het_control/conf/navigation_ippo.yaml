@@ -20,8 +20,8 @@ task:
   # shared_rew: False
 
 
-experiment:
-  save_folder: /home/grad/doc/2027/spatel2/MARL-UAV/outputs
+#experiment:
+#  save_folder: /home/grad/doc/2027/spatel2/MARL-UAV/outputs
 
 hydra:
   searchpath:

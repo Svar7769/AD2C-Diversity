@@ -6,18 +6,18 @@ Path: /home/spatel/Desktop/ad2c/AD2C-Diversity-Testing/
 import sys
 from het_control.run import run_experiment
 import yaml
-import os
+from pathlib import Path
 
 # =============================================================================
 # CONFIGURATION - Updated Paths for New System
 # =============================================================================
 # Base directory for the project
-BASE_DIR = "/home/svarp/Desktop/Projects/ADiCo/AD2C-Diversity-Testing"
+BASE_DIR = Path(__file__).resolve().parents[2]
 
 # Paths
 ABS_CONFIG_PATH = f"{BASE_DIR}/het_control/conf"
 CONFIG_NAME = "navigation_ippo"
-SAVE_PATH = "/home/svarp/Desktop/Projects/ADiCo/checkpoint/"
+SAVE_PATH = f"{BASE_DIR}/model_checkpoint/navigation_ippo/"
 
 # Default training parameters (can be overridden)
 DEFAULT_MAX_FRAMES = 12_000_000
@@ -212,6 +212,8 @@ def run_navigation_experiment(
         checkpoint_interval=checkpoint_interval,
         desired_snd=desired_snd,
         task_overrides=task_overrides,
+        model_overrides=model_overrides,
+        experiment_overrides=experiment_overrides,
         seed=seed,
         esc_config_path=esc_config_to_use,
         use_esc=use_esc
