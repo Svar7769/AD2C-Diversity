@@ -263,6 +263,32 @@ class ExtremumSeekingController:
             setpoint          # Base setpoint (no perturbation)
         )
     
+    def state_dict(self) -> dict:
+        return {
+            "theta_0": float(self.theta_0),
+            "wt": float(self.wt),
+            "integral": float(self.integral),
+            "m2": float(self.m2),
+            "hpf_prev_input": (
+                None if self.hpf.prev_input is None
+                else float(self.hpf.prev_input)
+            ),
+            "hpf_prev_output": float(self.hpf.prev_output),
+            "lpf_prev_output": (
+                None if self.lpf.prev_output is None
+                else float(self.lpf.prev_output)
+            ),
+        }
+
+    def load_state_dict(self, state: dict) -> None:
+        self.theta_0 = state["theta_0"]
+        self.wt = state["wt"]
+        self.integral = state["integral"]
+        self.m2 = state["m2"]
+        self.hpf.prev_input = state["hpf_prev_input"]
+        self.hpf.prev_output = state["hpf_prev_output"]
+        self.lpf.prev_output = state["lpf_prev_output"]
+
     def reset(self):
         """Reset controller state to initial conditions."""
         self.hpf.reset()
