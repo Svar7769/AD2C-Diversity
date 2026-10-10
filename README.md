@@ -1,6 +1,10 @@
 # ADiCo — Adaptive Diversity Control
 
-ADiCo builds on [DiCo](https://openreview.net/forum?id=qQjUgItPq4) and uses Extremum Seeking Control (ESC) to adjust behavioral diversity during training. The project has been updated for Python 3.12 and PyTorch 2.10. Dependencies are now installed automatically, and checkpoints also save the ESC controller state.
+This repository introduces **ADiCo (Adaptive Diversity Control)**, a framework for enhancing **multi-agent reinforcement learning (MARL)** by dynamically managing behavioral diversity. It extends the work of **[DiCo: Controlling Behavioral Diversity in Multi-Agent Reinforcement Learning (Bettini et al., ICML 2024)](https://openreview.net/forum?id=qQjUgItPq4)** by introducing a novel adaptive control mechanism based on Extremum Seeking Control (ESC). This allows AD2C to intelligently balance exploration and exploitation to solve complex, heterogeneous MARL tasks like multi-agent navigation.
+
+<p align="center">
+<img src="https://github.com/Svar7769/AD2C/blob/main/src/ESC_blockDiagram%20-%20AD2C_TITLE_Simplified_v2_page-0001.jpg" alt="ES Controller FlowChart">
+</p>
 
 ## Install
 
@@ -76,6 +80,25 @@ Training settings are in `het_control/conf/`. You can also add settings to a com
 
 Checkpoints are saved under `model_checkpoint/balance_ippo/` and `model_checkpoint/navigation_ippo/`.
 
-## License
+## 🙌 Acknowledgements
 
-See the `LICENSE` file for details.
+This repository builds upon:
+
+* [DiCo](https://openreview.net/forum?id=qQjUgItPq4) - Original diversity control framework
+* [BenchMARL](https://github.com/matteobettini/BenchMARL) - Multi-agent benchmarking library
+* [TorchRL](https://github.com/pytorch/rl) - Reinforcement learning framework
+* [VMAS](https://github.com/proroklab/VectorizedMultiAgentSimulator) - Vectorized multi-agent simulator
+
+Special thanks to the ProrokLab team for their foundational work on behavioral diversity in MARL.
+
+---
+
+## 📧 Contact
+
+For questions or issues, please open an issue on GitHub or contact the maintainers.
+
+---
+
+## 📄 License
+
+This project is licensed under the same terms as the original DiCo repository. Please refer to the LICENSE file for details.
