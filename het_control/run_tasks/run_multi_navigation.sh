@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Run with different SND values and agents_with_same_goal configurations
-snd_values=(0)
-goal_values=(1) 
-seeds=(0 1 2 3 4)
+snd_values=(0 0.25 0.5 0.75 1.0 1.25)
+goal_values=(1 2 3)
+seeds=(0 1 2)
 
 for snd in "${snd_values[@]}"; do
     for goals in "${goal_values[@]}"; do
@@ -12,10 +12,10 @@ for snd in "${snd_values[@]}"; do
             echo "Running with SND: $snd, agents_with_same_goal: $goals, seed: $seed"
             echo "=================================================="
             
-            python ./AD2C-Diversity-Testing/het_control/run_tasks/run_navigation.py \
+            python ./het_control/run_tasks/run_navigation.py \
                 model.desired_snd=$snd \
                 task.agents_with_same_goal=$goals \
-                seed=$seed \
+                seed=$seed
 
             # Optional: check if the run was successful
             if [ $? -ne 0 ]; then

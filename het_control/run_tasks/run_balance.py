@@ -24,7 +24,7 @@ DEFAULT_MAX_FRAMES = 12_000_000
 DEFAULT_CHECKPOINT_INTERVAL = 12_000_000
 
 # ESC Controller Configuration
-USE_ESC = True  # Set to False to disable ESC
+USE_ESC = False  # Set to False to disable ESC
 ESC_CONFIG_FILE = f"{BASE_DIR}/het_control/conf/callback/escontroller.yaml"
 
 # Default ESC overrides (can be overridden from command line)

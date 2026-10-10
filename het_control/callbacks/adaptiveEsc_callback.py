@@ -44,7 +44,7 @@ class AdaptiveESCCallback(Callback):
         initial_snd: float,
         dither_magnitude: float = 0.2,
         dither_frequency: float = 1.0,
-        integrator_gain: float = -0.05,
+        integrator_gain: float = -0.1,
         high_pass_cutoff: float = 1.0,
         low_pass_cutoff: float = 1.0,
         use_adaptive_gain: bool = True,
