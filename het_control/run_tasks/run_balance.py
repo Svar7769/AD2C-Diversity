@@ -31,12 +31,12 @@ ESC_CONFIG_FILE = f"{BASE_DIR}/het_control/conf/callback/escontroller.yaml"
 # Default ESC overrides (can be overridden from command line)
 DEFAULT_ESC_OVERRIDES = {
     "control_group": "agents",
-    "dither_magnitude": 0.1,      
-    "dither_frequency": 1.0,    
+    "dither_magnitude": 0.1,
+    "dither_frequency": 1.0,
     "high_pass_cutoff": 1.0,
     "low_pass_cutoff": 1.0,
     "integrator_gain": -0.01,
-    "sampling_period": 1.0,       
+    "sampling_period": 1.0,
     "min_snd": 0.0,
     "max_snd": 3.0,
     "use_adaptive_gain": True,
@@ -53,13 +53,13 @@ def parse_all_overrides():
     """
     Parse all command line arguments dynamically.
     Supports any Hydra-style override: category.parameter=value
-    
+
     Categories:
     - model.*: Model parameters
     - task.*: Task parameters (e.g., n_agents, package_mass)
     - experiment.*: Experiment parameters
     - esc.*: ESC controller parameters
-    
+
     Returns:
         tuple: (model_overrides, task_overrides, experiment_overrides, esc_overrides)
     """
@@ -68,13 +68,13 @@ def parse_all_overrides():
     experiment_overrides = {}
     esc_overrides = DEFAULT_ESC_OVERRIDES.copy()
     seed = None
-    
+
     for arg in sys.argv[1:]:
         if '=' not in arg:
             continue
-            
+
         key, value = arg.split('=', 1)
-        
+
         # Try to convert value to appropriate type
         try:
             # Try float first
@@ -87,7 +87,7 @@ def parse_all_overrides():
             if value.lower() in ['true', 'false']:
                 value = value.lower() == 'true'
             # Otherwise keep as string
-        
+
         # Route to appropriate dictionary
         if key.startswith('model.'):
             param = key.replace('model.', '')
@@ -105,7 +105,7 @@ def parse_all_overrides():
             seed = value
         else:
             print(f"⚠️  Warning: Unknown override category: {key}")
-    
+
     return model_overrides, task_overrides, experiment_overrides, esc_overrides, seed
 
 
@@ -119,7 +119,7 @@ def run_balance_experiment(
 ):
     """
     Run Balance experiment with specified parameters.
-    
+
     Args:
         model_overrides: Dictionary of model parameter overrides
         task_overrides: Dictionary of task parameter overrides
@@ -132,42 +132,42 @@ def run_balance_experiment(
     task_overrides = task_overrides or {}
     experiment_overrides = experiment_overrides or {}
     esc_overrides = esc_overrides or DEFAULT_ESC_OVERRIDES.copy()
-    
+
     # Extract key parameters
     desired_snd = model_overrides.get('desired_snd', 0.0)
     max_frames = experiment_overrides.get('max_n_frames', DEFAULT_MAX_FRAMES)
     checkpoint_interval = experiment_overrides.get('checkpoint_interval', DEFAULT_CHECKPOINT_INTERVAL)
-    
+
     # Load ESC config and apply overrides
     temp_esc_config = None
     if use_esc:
         try:
             with open(ESC_CONFIG_FILE, 'r') as f:
                 esc_config = yaml.safe_load(f)
-            
+
             if 'esc_controller' not in esc_config:
                 esc_config['esc_controller'] = {}
-            
+
             # Set initial_snd from model override
             esc_config['esc_controller']['initial_snd'] = desired_snd
-            
+
             # Apply all ESC overrides
             for key, value in esc_overrides.items():
                 esc_config['esc_controller'][key] = value
-            
+
             # Save to a task-specific temporary file
             temp_esc_config = "/tmp/escontroller_balance.yaml"
             with open(temp_esc_config, 'w') as f:
                 yaml.dump(esc_config, f)
-            
+
             esc_config_to_use = temp_esc_config
-            
+
         except FileNotFoundError:
             print(f"⚠️  Warning: ESC config not found at {ESC_CONFIG_FILE}. Using defaults.")
             esc_config_to_use = ESC_CONFIG_FILE
     else:
         esc_config_to_use = ESC_CONFIG_FILE
-    
+
     # Print configuration summary
     print(f"{'='*80}")
     print(f"🎯 Running Balance Task with ESC")
@@ -175,22 +175,22 @@ def run_balance_experiment(
     print(f"📊 Configuration:")
     print(f"   Max frames: {max_frames:,}")
     print(f"   Checkpoint interval: {checkpoint_interval:,}")
-    
+
     if model_overrides:
         print(f"\n📝 Model overrides:")
         for key, value in model_overrides.items():
             print(f"   {key}: {value}")
-    
+
     if task_overrides:
         print(f"\n📋 Task overrides:")
         for key, value in task_overrides.items():
             print(f"   {key}: {value}")
-    
+
     if experiment_overrides:
         print(f"\n⚙️  Experiment overrides:")
         for key, value in experiment_overrides.items():
             print(f"   {key}: {value}")
-    
+
     if use_esc:
         print(f"\n🎛️  ESC Controller:")
         print(f"   Control group: {esc_overrides.get('control_group', 'agents')}")
@@ -200,9 +200,9 @@ def run_balance_experiment(
         print(f"   Filters: HPF={esc_overrides.get('high_pass_cutoff', 0.1)}, LPF={esc_overrides.get('low_pass_cutoff', 0.05)} rad/s")
         print(f"   SND bounds: [{esc_overrides.get('min_snd', 0.0)}, {esc_overrides.get('max_snd', 3.0)}]")
         print(f"   Adaptive gain: {esc_overrides.get('use_adaptive_gain', True)}")
-    
+
     print(f"{'='*80}\n")
-    
+
     # Execute via the reusable run_experiment function from run.py
     run_experiment(
         config_path=CONFIG_PATH,
@@ -216,14 +216,15 @@ def run_balance_experiment(
         experiment_overrides=experiment_overrides,
         seed=seed,
         esc_config_path=esc_config_to_use,
-        use_esc=use_esc
+        use_esc=use_esc,
+        visualize_snd=True,
     )
 
 
 if __name__ == "__main__":
     # Parse all command-line arguments
     model_overrides, task_overrides, experiment_overrides, esc_overrides, seed = parse_all_overrides()
-    
+
     # Print what was parsed
     print(f"\n{'='*50}")
     print(f"Parsed overrides:")
@@ -238,7 +239,7 @@ if __name__ == "__main__":
     if esc_overrides != DEFAULT_ESC_OVERRIDES:
         print(f"  ESC: {esc_overrides}")
     print(f"{'='*50}\n")
-    
+
     # Run experiment with parsed parameters
     run_balance_experiment(
         model_overrides=model_overrides,

@@ -38,14 +38,6 @@ def setup(task_name: str) -> None:
     benchmarl.models.model_config_registry.update(
         {"hetcontrolmlpempirical": HetControlMlpEmpiricalConfig}
     )
-    vmas_tasks = {
-        "vmas/balance", "vmas/ball_passage", "vmas/ball_trajectory",
-        "vmas/buzz_wire", "vmas/discovery", "vmas/dispersion",
-        "vmas/football", "vmas/navigation", "vmas/reverse_transport",
-        "vmas/sampling", "vmas/tag",
-    }
-    if task_name in vmas_tasks:
-        VmasTask.render_callback = render_callback
 
 
 def get_experiment(
@@ -63,6 +55,15 @@ def get_experiment(
     algorithm_config = load_algorithm_config_from_hydra(cfg.algorithm)
     experiment_config = load_experiment_config_from_hydra(cfg.experiment)
     task_config = load_task_config_from_hydra(cfg.task, task_name)
+
+    if task_name in {
+        "vmas/balance", "vmas/ball_passage", "vmas/ball_trajectory",
+        "vmas/buzz_wire", "vmas/discovery", "vmas/dispersion",
+        "vmas/football", "vmas/navigation", "vmas/reverse_transport",
+        "vmas/sampling", "vmas/tag",
+    }:
+        type(task_config).render_callback = staticmethod(render_callback)
+
     critic_model_config = load_model_config_from_hydra(cfg.critic_model)
     model_config = load_model_config_from_hydra(cfg.model)
 
